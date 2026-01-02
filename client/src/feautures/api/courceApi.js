@@ -6,7 +6,7 @@ const COURCE_API = "http://localhost:8080/api/v1/cource";
 
 export const courceApi = createApi({
   reducerPath: "courceApi",
-  tagTypes: ["Refetch_Creator_Cource"],
+  tagTypes: ["Refetch_Creator_Cource", "Refetch_Lecture"],
   baseQuery: fetchBaseQuery({
     baseUrl: COURCE_API,
     credentials: "include",
@@ -52,6 +52,13 @@ export const courceApi = createApi({
         url: `/${courceId}/lecture`,
         method: "GET",
       }),
+      providesTags: ["Refetch_Lecture"],
+    }),
+    getPublishedCource: builder.query({
+      query: () => ({
+        url: "/published-cource",
+        method: "GET",
+      }),
     }),
     editLecture: builder.mutation({
       query: ({
@@ -66,6 +73,32 @@ export const courceApi = createApi({
         body: { lectureTitle, videInfo, isPreviewFree },
       }),
     }),
+    removeCource: builder.mutation({
+      query: ({ courceId }) => ({
+        url: `/remove/${courceId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Refetch_Creator_Cource"], 
+    }),
+    removeLecture: builder.mutation({
+      query: ({ courceId, lectureId }) => ({
+        url: `${courceId}/lecture/${lectureId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Refetch_Lecture"],
+    }),
+    getLectureById: builder.query({
+      query: (lectureId) => ({
+        url: `/lecture/${lectureId}`,
+        method: "GET",
+      }),
+    }),
+    togglePublish: builder.mutation({
+      query: ({ courceId, query }) => ({
+        url: `/${courceId}?publish=${query}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
@@ -76,5 +109,10 @@ export const {
   useGetCourceByIdQuery,
   useCreateLectureMutation,
   useGetCourceLectureQuery,
-  useEditLectureMutation
+  useEditLectureMutation,
+  useRemoveLectureMutation,
+  useRemoveCourceMutation,
+  useGetLectureByIdQuery,
+  useTogglePublishMutation,
+  useGetPublishedCourceQuery
 } = courceApi;

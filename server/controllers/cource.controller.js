@@ -195,9 +195,9 @@ export const editLecture = async (req, res) => {
     }
     //update lecture
     if (lectureTitle) lecture.lectureTitle = lectureTitle;
-    if (videInfo.videoUrl) lecture.videoUrl = videInfo.videoUrl;
-    if (videInfo.publicId) lecture.publicId = videInfo.publicId;
-    if (isPreviewFree) lecture.isPreviewFree = isPreviewFree;
+    if (videInfo?.videoUrl) lecture.videoUrl = videInfo.videoUrl;
+    if (videInfo?.publicId) lecture.publicId = videInfo.publicId;
+    lecture.isPreviewFree = isPreviewFree;
 
     await lecture.save();
     //ensuring cource still have lecture id
@@ -214,6 +214,27 @@ export const editLecture = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "failed To edit Lecture",
+      success: false,
+    });
+  }
+};
+export const removeCource = async (req, res) => {
+  try {
+    const { courceId } = req.params;
+    const cource = await Course.findByIdAndDelete(courceId);
+    if (!cource) {
+      return res.status(404).json({
+        message: "Cource Not Found to Delete",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      message: "Cource Deleted Successfully",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "failed To remove Cource",
       success: false,
     });
   }
@@ -269,6 +290,58 @@ export const getLectureById = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       message: "failed To get Lecture By Id",
+      success: false,
+    });
+  }
+};
+
+//publish ubpublish logic
+
+export const togglePublish = async (req, res) => {
+  try {
+    const { courceId } = req.params;
+    const { publish } = req.query;
+    const cource = await Course.findById(courceId);
+    if (!cource) {
+      return res.status(404).json({
+        message: "Cource Not Found",
+      });
+    }
+    cource.isPublished = publish === "true";
+    await cource.save();
+    const statusMessage = cource.isPublished ? "Published" : "UnPublished";
+    return res.status(200).json({
+      message: `Cource is ${statusMessage}`,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "failed To Publish Lecture",
+      success: false,
+    });
+  }
+};
+
+///cource published
+
+export const getPublishedCource = async (_, res) => {
+  try {
+    const cources = await Course.find({ isPublished: true }).populate({
+      path: "creator",
+      select: "name photoUrl",
+    });
+    if (!cources) {
+      return res.status(404).json({
+        message: "Something Went Wrong while fetching cources",
+      });
+    }
+    return res.status(200).json({
+      cources,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "failed To Publish Lecture",
       success: false,
     });
   }

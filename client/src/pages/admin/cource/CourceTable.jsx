@@ -12,15 +12,17 @@ import {
 } from "@/components/ui/table";
 import { useGetCreatorCourceQuery } from "@/feautures/api/courceApi.js";
 import { Edit } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CourceTable = () => {
   const navigate = useNavigate();
-  const { data, isLoading } = useGetCreatorCourceQuery();
+  const { data, isLoading} = useGetCreatorCourceQuery({refetchOnMountOrArgChange: true});
   if (isLoading) return <h1>Loading.....</h1>;
   console.log("data--->",data)
   console.log(data)
+
+  
   return (
     <div>
       <Button onClick={() => navigate("/admin/cource/create")}>

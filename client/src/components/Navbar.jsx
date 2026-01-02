@@ -34,7 +34,8 @@ const Navbar = () => {
   // const user = true;
   const { user } = useSelector((store) => store.auth);
   const navigate = useNavigate();
-  const [logoutuser, { data, isSuccess:loggedIsSuccess }] = useLogoutuserMutation();
+  const [logoutuser, { data, isSuccess: loggedIsSuccess }] =
+    useLogoutuserMutation();
 
   const logutOutHandler = async () => {
     await logoutuser();
@@ -42,10 +43,10 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if(loggedIsSuccess){
+    if (loggedIsSuccess) {
       toast.success(data?.message || "Logged Out Successfully");
     }
-  }, [loggedIsSuccess]);//changed is Success to loggedisSuccess to avoid conflict with other isSuccess
+  }, [loggedIsSuccess]); //changed is Success to loggedisSuccess to avoid conflict with other isSuccess
 
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b border-b-gray-300 dark:border-b-gray-800 fixed top-0 left-0 right-0 duration-300 z-10">
@@ -53,9 +54,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full">
         <div className="flex items-center gap-2">
           <School size={30} />
-          <h1 className="hidden md:block font-extrabold text-2xl">
-            Platfrom-Educate
-          </h1>
+          <Link to="/">
+            <h1 className="hidden md:block font-extrabold text-2xl">
+              Platfrom-Educate
+            </h1>
+          </Link>
         </div>
         {/* user icons and dark mode icons  */}
         <div className="flex items-center gap-8">

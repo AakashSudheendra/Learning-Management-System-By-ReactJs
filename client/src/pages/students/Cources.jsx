@@ -1,11 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import React from "react";
 import Cource from "./Cource";
-
-const cources=[1,2,3,4,5,6,7,8]
+import { useGetPublishedCourceQuery } from "@/feautures/api/courceApi";
 
 const Cources = () => {
-  const isLoading = false;
+  const {data,isLoading,isError}=useGetPublishedCourceQuery();
+  if(isError) return <h1>Cource Fetch Error</h1>
   return (
     <div className="bg-gray-50">
       <div className="max-w-7xl mx-auto p-6">
@@ -16,7 +16,7 @@ const Cources = () => {
               <CourseSkeleton key={index} />
             ))
           ) : (
-            cources.map((cource,index)=><Cource key={index}/>)
+            data?.cources && data.cources.map((cource,index)=><Cource key={index} cource={cource}/>)
           )}
         </div>
       </div>
